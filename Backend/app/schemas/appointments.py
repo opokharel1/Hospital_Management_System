@@ -1,3 +1,5 @@
+# Pydantic checks & validates data
+
 from pydantic import BaseModel
 
 class AppointmentCreate(BaseModel):

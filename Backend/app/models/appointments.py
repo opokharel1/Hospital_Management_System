@@ -1,3 +1,5 @@
+# Translates Python to Database Tables
+
 from sqlalchemy import Column, Integer, String
 from app.database.connection import Base
 
