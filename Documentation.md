@@ -73,3 +73,24 @@ Change the test names in the JSON box, and click the big blue "Execute" button.
 
 Once you hit execute, look at your terminal log. You will see a "POST /appointments/ HTTP/1.1" 200 OK appear, proving that you just saved a real appointment into PostgreSQL. Try it out and let me know what happens!
 
+## The Relational Architecture Blueprint
+
+  ┌───────────────┐               ┌─────────────────┐
+  │     users     │               │     doctors     │
+  ├───────────────┤               ├─────────────────┤
+  │ id (PK)       │◄──────┐       │ id (PK)         │◄──────┐
+  │ email         │       │       │ user_id (FK)────┘       │
+  │ role          │       │       │ specialization  │       │
+  └───────────────┘       │       └─────────────────┘       │
+                          │                                 │
+                 (Links to Patient User)          (Links to Assigned Doctor)
+                          │                                 │
+                  ┌───────┴─────────┐                       │
+                  │  appointments   │                       │
+                  ├─────────────────┤                       │
+                  │ id (PK)         │                       │
+                  │ patient_id (FK) │                       │
+                  │ doctor_id (FK) ─────────────────────────┘
+                  │ status          │
+                  └─────────────────┘
+
