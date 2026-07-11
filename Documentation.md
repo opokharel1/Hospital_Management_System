@@ -94,3 +94,15 @@ Once you hit execute, look at your terminal log. You will see a "POST /appointme
                   │ status          │
                   └─────────────────┘
 
+## Rewrite Data Schemas
+## enable automatic email syntax verification
+pip install pydantic[email]
+
+## Generate requirements.txt
+
+
+## Create Separate API Route Blueprints
+1. <b>Create a Users Router (app/routes/users.py)</b>
+2. <b>Create a Doctors Route File (app/routes/doctors.py)</b>
+3. <b>Update the Appointments Router (app/routes/appointments.py)</b>
+4. <b>Plug Everything Back into main.py</b>

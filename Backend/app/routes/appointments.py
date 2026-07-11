@@ -1,6 +1,4 @@
-# Executes the business logic
-
-from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.models.appointments import Appointment
@@ -10,36 +8,19 @@ router = APIRouter(prefix="/appointments", tags=["Appointments"])
 
 @router.post("/", response_model=AppointmentResponse)
 def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get_db)):
-    db_appointment = Appointment(**appointment.model_dump())
+    # Temporarily hardcoding a patient_id to 1 until we set up login cookies/tokens next!
+    db_appointment = Appointment(
+        patient_id=1, 
+        doctor_id=appointment.doctor_id,
+        appointment_date=appointment.appointment_date,
+        appointment_time=appointment.appointment_time,
+        status="pending"
+    )
     db.add(db_appointment)
     db.commit()
     db.refresh(db_appointment)
     return db_appointment
 
 @router.get("/", response_model=list[AppointmentResponse])
-def get_appointments(db: Session = Depends(get_db)):
+def get_all_appointments(db: Session = Depends(get_db)):
     return db.query(Appointment).all()
-
-
-@router.put("/{appointment_id}/status", response_model=AppointmentResponse)
-@router.patch("/{appointment_id}/status", response_model=AppointmentResponse)
-def update_appointment_status(
-    appointment_id: int,
-    db: Session = Depends(get_db),
-    status: str | None = Query(default=None),
-    body: dict | None = Body(default=None),
-):
-    new_status = status or (body or {}).get("status")
-
-    if not new_status:
-        raise HTTPException(status_code=400, detail="Status is required")
-
-    appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
-
-    if appointment is None:
-        raise HTTPException(status_code=404, detail="Appointment not found")
-
-    appointment.status = new_status
-    db.commit()
-    db.refresh(appointment)
-    return appointment
