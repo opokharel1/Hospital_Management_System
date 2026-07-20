@@ -58,6 +58,8 @@ pip install psycopg2-binary
 
 ## Run Backend
 uvicorn app.main:app --reload  <i>(remeber, you need to be inside virtual environment and inside backend folder)</i>
+<br> <i> or, </i>
+python -m uvicorn app.main:app --reload
 
 ### Open in Browser:
 
@@ -106,3 +108,38 @@ pip install pydantic[email]
 2. <b>Create a Doctors Route File (app/routes/doctors.py)</b>
 3. <b>Update the Appointments Router (app/routes/appointments.py)</b>
 4. <b>Plug Everything Back into main.py</b>
+
+### Made fully operational database and three working API sections (Users, Doctors, and Appointments)
+
+# JWT Token Authentication
+
+## Install Security Tools inside (.venv)
+
+pip install "passlib[bcrypt]" python-jose[cryptography] python-multipart
+
+ * <b> passlib[bcrypt] </b>: Scrambles passwords into unreadable hashes before saving them to PostgreSQL. <i> (if passlib library is not compatible to bcrypt library:: pip install "bcrypt==4.0.1")</i>
+
+ * <b> python-jose </b> : Creates and unpacks secure JWT data passports.
+
+ * <b> python-multipart </b> : Allows FastAPI to accept standard username/password inputs via form screens.
+
+## Update (.env)
+
+## Create a Security Utility Helper (app/utils/security.py)
+
+## Update Config Loader (app/config/config.py)
+make JWT secret and access token expire minutes :: str
+
+## Update Registration & Add Login to app/routes/users.py
+--> now, check registering and login users. The JWT tokens are working. (got bearer token)
+
+## Add Current User Extraction (app/utils/security.py)
+--> add OAuth2PasswordBearer and a helper function get_current_user. This reads the token from incoming requests and fetches the user from the database.
+
+## Update Appointments Route (app/routes/appointments.py)
+--> requiring an authenticated user via current_user: User = Depends(get_current_user)
+
+## Add Strict Date & Time Validation (in app/schemas/appointments.py)
+
+### Authentication and Dynamic User Allocation (Completed)
+

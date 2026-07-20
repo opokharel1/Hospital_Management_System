@@ -1,5 +1,6 @@
 # Pydantic checks & validates data
 
+from datetime import date, time
 from pydantic import BaseModel, EmailStr
 
 # --- USER SCHEMAS ---
@@ -38,15 +39,15 @@ class DoctorResponse(BaseModel):
 # --- APPOINTMENT SCHEMAS ---
 class AppointmentCreate(BaseModel):
     doctor_id: int
-    appointment_date: str
-    appointment_time: str
+    appointment_date: date
+    appointment_time: time
 
 class AppointmentResponse(BaseModel):
     id: int
     patient_id: int
     doctor_id: int
-    appointment_date: str
-    appointment_time: str
+    appointment_date: date
+    appointment_time: time
     status: str
 
     class Config:
