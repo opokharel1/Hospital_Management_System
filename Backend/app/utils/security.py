@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.models.users import User
 
+from typing import List
+
 # Tells passlib to use the bcrypt algorithm for passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -46,3 +48,17 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise credentials_exception
     return user
+
+def require_role(allowed_roles: List[str]):
+    """
+    Dependency factory that checks if the authenticated user has an allowed role.
+    Usage: Depends(require_role(["admin"])) or Depends(require_role(["admin", "doctor"]))
+    """
+    def role_checker(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access denied: Requires one of these roles: {allowed_roles}"
+            )
+        return current_user
+    return role_checker

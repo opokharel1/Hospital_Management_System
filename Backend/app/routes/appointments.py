@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.models.appointments import Appointment
-from app.schemas.appointments import AppointmentCreate, AppointmentResponse
+from app.schemas.appointments import AppointmentCreate, AppointmentResponse, AppointmentStatusUpdate
 
 from app.models.users import User
-from app.utils.security import get_current_user
+from app.utils.security import get_current_user, require_role
 
 router = APIRouter(prefix="/appointments", tags=["Appointments"])
 
@@ -33,3 +33,24 @@ def get_all_appointments(db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)  # Protected list view
 ):
     return db.query(Appointment).all()
+
+@router.patch("/{appointment_id}/status", response_model=AppointmentResponse)
+def update_appointment_status(
+    appointment_id: int,
+    status_update: AppointmentStatusUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role(["doctor", "admin"]))  # 🔒 Doctors & Admins only!
+):
+    # 1. Fetch appointment from database
+    appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
+    if not appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Appointment with ID {appointment_id} not found."
+        )
+
+    # 2. Update status & save
+    appointment.status = status_update.status
+    db.commit()
+    db.refresh(appointment)
+    return appointment

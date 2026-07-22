@@ -2,6 +2,7 @@
 
 from datetime import date, time
 from pydantic import BaseModel, EmailStr
+from typing import Literal
 
 # --- USER SCHEMAS ---
 class UserCreate(BaseModel):
@@ -52,3 +53,7 @@ class AppointmentResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class AppointmentStatusUpdate(BaseModel):
+    # Restricts status to only these valid values
+    status: Literal["pending", "confirmed", "cancelled", "completed"]

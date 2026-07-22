@@ -143,3 +143,48 @@ make JWT secret and access token expire minutes :: str
 
 ### Authentication and Dynamic User Allocation (Completed)
 
+### Next steps:
+<b>Role-Based Access Control (RBAC):</b> Restrict /doctors/ creation endpoints so only users with role == "admin" or role == "doctor" can add doctor profiles.
+
+<b>GET /appointments/me:</b> A patient route that returns only the logged-in patient's appointments (instead of showing every appointment in the system).
+
+<b>GET /appointments/doctor/{doctor_id}:</b> A route for doctors to see their daily upcoming patient appointments.
+
+<b>PATCH /appointments/{id}/status:</b> Allow doctors or admins to update appointment status from "pending" to "confirmed" or "cancelled". 
+Also, admin will create the slots for appointments for doctor, and patients can just choose those slots for feasibility. notifiy the doctor or admin, either can confirm the appointment?
+
+### Role-Based Access Control (RBAC):
+# Protected Doctor Management Endpoints:
+
+POST /doctors/ ➔ Admin Only (Creates a doctor profile).
+
+GET /doctors/ ➔ Public / All Authenticated Users (Lists active doctors so patients can pick one).
+
+## Add Role Dependency (app/utils/security.py)
+
+## Implement Doctor Routes (app/routes/doctors.py)
+
+## Register Doctor Router in app/main.py
+
+### Prevent 500 Crashes (Validate Foreign Keys First), Update app/routes/doctors.py
+
+If you try to create a doctor profile for user_id = 40, but you only have 5 users registered, PostgreSQL crashes with a 500 Internal Server Error (Foreign Key violation). Checking <i> User.id == doctor.user_id </i> catches this and turns it into a friendly 404 Not Found.
+
+## 1: Status Update Route 
+Add an endpoint (PATCH /appointments/{id}/status) so admins or doctors can change an appointment's status (e.g., from pending to confirmed or cancelled).
+
+--> Add Request Schema (app/schemas/appointments.py)
+--> Implement PATCH Endpoint (app/routes/appointments.py)
+
+## Option 2: Personalized Dashboard Endpoints
+Add filtered endpoints so users only see their own data:
+
+GET /appointments/me — Returns only the logged-in patient's appointments.
+
+GET /appointments/doctor/{doctor_id} — Returns only appointments assigned to a specific doctor.
+
+## Option 3: Role Authorization Rule for Doctors
+Add a rule in create_doctor_profile to ensure target_user.role == "doctor" before creating the profile, preventing admins from accidentally making a patient account into a doctor.
+
+
+

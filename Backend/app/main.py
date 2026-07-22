@@ -14,7 +14,7 @@ from app.routes.doctors import router as doctor_router
 # Auto-creates your tables in PostgreSQL on start
 Base.metadata.create_all(bind=engine)  # Look at all our code models, connect to PostgreSQL, and automatically build the actual database tables if they aren't already there
 
-app = FastAPI(title="Hospital Management System API")
+app = FastAPI(title="Hospital Management System API", version="0.1.0")
 
 app.include_router(user_router)
 app.include_router(doctor_router)
