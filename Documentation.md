@@ -176,15 +176,74 @@ Add an endpoint (PATCH /appointments/{id}/status) so admins or doctors can chang
 --> Add Request Schema (app/schemas/appointments.py)
 --> Implement PATCH Endpoint (app/routes/appointments.py)
 
-## Option 2: Personalized Dashboard Endpoints
+## 2: Implement Personalized Dashboard Endpoints
 Add filtered endpoints so users only see their own data:
 
 GET /appointments/me — Returns only the logged-in patient's appointments.
 
 GET /appointments/doctor/{doctor_id} — Returns only appointments assigned to a specific doctor.
 
-## Option 3: Role Authorization Rule for Doctors
-Add a rule in create_doctor_profile to ensure target_user.role == "doctor" before creating the profile, preventing admins from accidentally making a patient account into a doctor.
+# --> add new routes on (app/routes/appointments.py)
+
+### Work for Later (in Backend):
+
+<b> A: Add Doctor Role Guard in Profile Creation </b> — Add a quick check in POST /doctors/ to verify that target_user.role == "doctor" before creating a profile.
+
+<b> B: Add Pagination / Sorting </b>— Allow users to sort appointments by date or limit the number of results per page.
+
+<b> C: Write Tests </b>— Set up unit tests using pytest and httpx to automatically test your FastAPI endpoints.
+
+
+### Frotend Integration
+
+## Enable CORS in FastAPI; add CORSMiddleware in main.py
+
+## Create React app using Vite
+--> Oxlint 
+--> <i> 
+cd hospital-frontend
+npm install
+npm install axios react-router-dom </i>
+
+--> run the dev server: <i>npm run dev</i>
+
+## Folder structure:
+
+src/
+├── api.js              # Axios configuration & interceptors
+├── App.jsx             # Main router & state wrapper
+├── components/
+│   ├── Navbar.jsx      # Navigation bar with role-based links
+│   └── ProtectedRoute.jsx # Restricts pages based on login status
+└── pages/
+    ├── Login.jsx       # Login page
+    ├── Register.jsx    # Registration page
+    ├── PatientDashboard.jsx # Patient view (Book & View Appointments)
+    └── DoctorDashboard.jsx  # Doctor/Admin view (Manage Appointments)
+
+## Configure src/api.js
+--> all API calls automatically attach to authentication token
+
+## Enable CORS in FastAPI (main.py)
+--> add CORSMiddleware in FastAPI main.py file so the backend permits requests coming from http://localhost:5173 (at allow_origins)
+
+## in hospital-frontend terminal, run:
+npm install @tailwindcss/vite
+
+--> Use Tailwind plugin in project root; vite.config.js
+--> Update src/index.css; import tailwindcss
+
+## code for Login.jsx, Register.jsx, App.jsx
+
+### <i> Note: </i> Backend should run inside .venv, to control the versions of python, but, react-frontend can run outside of .venv, because node_modules handles isolation
+
+
+
+
+
+
+
+
 
 
 

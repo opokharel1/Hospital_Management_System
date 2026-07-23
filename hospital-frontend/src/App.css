@@ -1,0 +1,358 @@
+.app-shell {
+  min-height: 100svh;
+  color: #152033;
+  background:
+    radial-gradient(circle at top left, rgba(14, 116, 144, 0.18), transparent 34%),
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.15), transparent 28%),
+    linear-gradient(180deg, #f5f8fc 0%, #eef4fb 100%);
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(21, 32, 51, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  height: 3rem;
+  border-radius: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #f8fbff;
+  background: linear-gradient(135deg, #0f766e, #2563eb);
+  box-shadow: 0 10px 30px rgba(15, 118, 110, 0.2);
+}
+
+.brand-text {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-links a,
+.nav-button,
+.secondary-button,
+.stacked-form button,
+.status-button {
+  border: 0;
+  border-radius: 0.8rem;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.nav-links a {
+  color: #27415f;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.nav-links a.active {
+  color: #0f172a;
+  box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.25);
+}
+
+.nav-button,
+.stacked-form button {
+  cursor: pointer;
+  color: #f8fbff;
+  background: linear-gradient(135deg, #0f766e, #2563eb);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.18);
+}
+
+.secondary-button,
+.status-button {
+  cursor: pointer;
+  color: #14304f;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(21, 32, 51, 0.08);
+}
+
+.nav-links a:hover,
+.nav-button:hover,
+.secondary-button:hover,
+.stacked-form button:hover,
+.status-button:hover {
+  transform: translateY(-1px);
+}
+
+.auth-layout,
+.dashboard-shell {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.auth-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 460px);
+  gap: 1.5rem;
+  align-items: center;
+  min-height: calc(100svh - 6.5rem);
+}
+
+.hero-card,
+.form-card,
+.panel {
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 24px 60px rgba(21, 32, 51, 0.08);
+  border: 1px solid rgba(21, 32, 51, 0.08);
+}
+
+.hero-card {
+  padding: 2.5rem;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.hero-card h1,
+.dashboard-header h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+  color: #0f172a;
+}
+
+.lead {
+  max-width: 42rem;
+  margin-top: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #4b5b70;
+}
+
+.form-card,
+.panel {
+  padding: 1.5rem;
+}
+
+.form-card h2,
+.panel h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.35rem;
+  color: #0f172a;
+}
+
+.stacked-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.stacked-form label,
+.inline-form label {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 600;
+  color: #22354f;
+}
+
+.stacked-form input,
+.stacked-form select,
+.inline-form select {
+  border: 1px solid rgba(21, 32, 51, 0.12);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1rem;
+  font: inherit;
+  color: #0f172a;
+  background: #fff;
+}
+
+.stacked-form input:focus,
+.stacked-form select:focus,
+.inline-form select:focus {
+  outline: 3px solid rgba(37, 99, 235, 0.18);
+  border-color: rgba(37, 99, 235, 0.45);
+}
+
+.form-error,
+.form-success,
+.muted {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.form-error {
+  color: #b91c1c;
+}
+
+.form-success {
+  color: #047857;
+}
+
+.form-footer {
+  margin: 1rem 0 0;
+  color: #4b5b70;
+}
+
+.form-footer a {
+  color: #0f766e;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.list-stack,
+.table-grid,
+.appointment-table {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.list-card,
+.appointment-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  background: rgba(248, 251, 255, 0.9);
+  border: 1px solid rgba(21, 32, 51, 0.08);
+}
+
+.list-card {
+  grid-template-columns: 1.25fr 1fr 1fr;
+}
+
+.appointment-actions {
+  grid-template-columns: 1.1fr 0.9fr 0.9fr 0.8fr 1.6fr;
+}
+
+.status {
+  display: inline-flex;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-pending {
+  color: #92400e;
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.status-confirmed {
+  color: #1d4ed8;
+  background: rgba(59, 130, 246, 0.14);
+}
+
+.status-completed {
+  color: #047857;
+  background: rgba(16, 185, 129, 0.14);
+}
+
+.status-cancelled {
+  color: #b91c1c;
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.status-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inline-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.inline-form select {
+  min-width: min(100%, 24rem);
+}
+
+@media (max-width: 900px) {
+  .auth-layout,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header,
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-links {
+    justify-content: center;
+  }
+
+  .list-card,
+  .appointment-row,
+  .appointment-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .inline-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inline-form select {
+    min-width: 0;
+    width: 100%;
+  }
+}
