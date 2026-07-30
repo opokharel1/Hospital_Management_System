@@ -131,7 +131,7 @@ pip install "passlib[bcrypt]" python-jose[cryptography] python-multipart
 make JWT secret and access token expire minutes :: str
 
 ## Update Registration & Add Login to app/routes/users.py
---> now, check registering and login users. The JWT tokens are working. (got bearer token)
+--> now, check registering and login users. If the JWT tokens are working. (got bearer token?)
 
 ## Add Current User Extraction (app/utils/security.py)
 --> add OAuth2PasswordBearer and a helper function get_current_user. This reads the token from incoming requests and fetches the user from the database.
@@ -237,11 +237,11 @@ npm install @tailwindcss/vite
 
 ### <i> Note: </i> Backend should run inside .venv, to control the versions of python, but, react-frontend can run outside of .venv, because node_modules handles isolation
 
+--> In FastAPI, OAuth2 standard login endpoints (/users/login) expect request data to be sent as application/x-www-form-urlencoded (Form Data) with fields named username and password, NOT JSON.
 
+If your frontend api.js or loginUser function is sending JSON { "username": "...", "password": "..." }, FastAPI will throw a 422 Unprocessable Entity.
 
-
-
-
+<i> so, Fix in src/api.js (or wherever loginUser is defined) </i>
 
 
 

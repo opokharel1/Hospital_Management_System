@@ -43,20 +43,21 @@ export function clearStoredAuth() {
   localStorage.removeItem('role');
 }
 
-// Auth endpoints
-export async function loginUser(username, password) {
+// Login API call (OAuth2 Form Data format commonly used by FastAPI)
+export async function loginUser(credentials) {
+  // If your FastAPI endpoint uses OAuth2PasswordRequestForm:
+  const formData = new URLSearchParams()
+  formData.append('username', credentials.username)
+  formData.append('password', credentials.password)
 
-  const params = new URLSearchParams();
-  params.append('username', username);
-  params.append('password', password);
-  
-  const response = await API.post('/users/login', params, {
+  const response = await API.post('/users/login', formData, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-  });
-  return response.data;
-}
+    // If backend login endpoint accepts regular JSON instead of OAuth2 form data, we can simply do await API.post('/login', credentials) instead
+  })
+  return response.data
+} 
 
 export async function registerUser(userData) {
   const response = await API.post('/users/register', userData);

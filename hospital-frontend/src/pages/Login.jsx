@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../api'
 
-function Login({ onLogin }) {
+function Login() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const [form, setForm] = useState({ username: '', password: '' })
+  const [credentials, setCredentials] = useState({
+    username: '',
+    password: '',
+  })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
-  const fromPath = location.state?.from?.pathname
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -17,20 +17,30 @@ function Login({ onLogin }) {
     setError('')
 
     try {
-      const data = await loginUser(form.username, form.password)
-      const session = onLogin(data)
+      const data = await loginUser(credentials)
+      
+      // Store the token and user role/info
+      localStorage.setItem('token', data.access_token)
+      if (data.role) {
+        localStorage.setItem('role', data.role)
+      }
 
-      if (fromPath) {
-        navigate(fromPath, { replace: true })
+      // Redirect based on user role or default to patient dashboard
+      const userRole = data.role || 'patient'
+      if (userRole === 'doctor') {
+        navigate('/doctor-dashboard', { replace: true })
+      } else if (userRole === 'admin') {
+        navigate('/admin-dashboard', { replace: true })
       } else {
-        navigate(session.role === 'patient' ? '/patient' : '/doctor', {
-          replace: true,
-        })
+        navigate('/patient-dashboard', { replace: true })
       }
     } catch (requestError) {
-      setError(
-        requestError?.response?.data?.detail || 'Unable to log in with those credentials.',
-      )
+      const detail = requestError?.response?.data?.detail
+      if (typeof detail === 'string') {
+        setError(detail)
+      } else {
+        setError('Invalid username or password.')
+      }
     } finally {
       setLoading(false)
     }
@@ -39,22 +49,21 @@ function Login({ onLogin }) {
   return (
     <main className="auth-layout">
       <section className="hero-card">
-        <p className="eyebrow">Secure access</p>
-        <h1>Sign in to manage appointments</h1>
+        <p className="eyebrow">Welcome back</p>
+        <h1>Log in to your account</h1>
         <p className="lead">
-          Patients can book visits and review their schedule. Doctors and admins can
-          review and update appointment status.
+          Access your medical dashboard, appointments, and records.
         </p>
       </section>
 
       <section className="form-card">
-        <h2>Login</h2>
+        <h2>Log In</h2>
         <form onSubmit={handleSubmit} className="stacked-form">
           <label>
             Username
             <input
-              value={form.username}
-              onChange={(event) => setForm({ ...form, username: event.target.value })}
+              value={credentials.username}
+              onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
               type="text"
               autoComplete="username"
               required
@@ -64,8 +73,8 @@ function Login({ onLogin }) {
           <label>
             Password
             <input
-              value={form.password}
-              onChange={(event) => setForm({ ...form, password: event.target.value })}
+              value={credentials.password}
+              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
               type="password"
               autoComplete="current-password"
               required
@@ -75,12 +84,12 @@ function Login({ onLogin }) {
           {error ? <p className="form-error">{error}</p> : null}
 
           <button type="submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? 'Logging in...' : 'Log in'}
           </button>
         </form>
 
         <p className="form-footer">
-          New here? <Link to="/register">Create an account</Link>
+          Don't have an account? <Link to="/register">Register here</Link>
         </p>
       </section>
     </main>

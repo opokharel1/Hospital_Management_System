@@ -25,9 +25,15 @@ function Register() {
       setSuccess('Account created. You can now log in.')
       setTimeout(() => navigate('/login', { replace: true }), 800)
     } catch (requestError) {
-      setError(
-        requestError?.response?.data?.detail || 'Could not create the account right now.',
-      )
+      const detail = requestError?.response?.data?.detail
+      if (Array.isArray(detail)) {
+        // If FastAPI returns a list of validation errors
+        setError(detail.map((err) => err.msg).join(', '))
+      } else if (typeof detail === 'string') {
+        setError(detail)
+      } else {
+        setError('Could not create the account right now.')
+      }
     } finally {
       setLoading(false)
     }
