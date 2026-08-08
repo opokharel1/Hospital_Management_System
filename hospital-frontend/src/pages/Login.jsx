@@ -1,8 +1,8 @@
-import { useState } from 'react'   // creates dynamic memory state to keep track of user input, error messages and loading status in the component
+import { useState, useEffect } from 'react'   // creates dynamic memory state to keep track of user input, error messages and loading status in the component
 import { Link, useNavigate } from 'react-router-dom'  // creates clickable links (without full browser page refreshes) and allows navigation between pages
 import { loginUser } from '../api'   // imports the loginUser (custom) function from the api module to handle user authentication
 
-function Login({onLogin}) {
+function Login({ auth, onLogin }) {
   const navigate = useNavigate()  //intialize navigation function to redirect users to different pages after login
   const [credentials, setCredentials] = useState({  //state object created to hold the user's login credentials (username and password)
     username: '',
@@ -11,18 +11,18 @@ function Login({onLogin}) {
   const [error, setError] = useState('')   //state for storing error messages related to login attempts, initialized as an empty string
   const [loading, setLoading] = useState(false)   //state to track the loading status of the login process, initialized as false
 
-  // useEffect(() => {
-  //   // If the user lands on the login page but already has a valid token...
-  //   if (auth?.token) {
-  //     const userRole = auth.role || 'patient';
-  //     // Bounce them immediately forward back to their dashboard!
-  //     if (userRole === 'doctor' || userRole === 'admin') {
-  //       navigate('/doctor', { replace: true });
-  //     } else {
-  //       navigate('/patient', { replace: true });
-  //     }
-  //   }
-  // }, [auth, navigate]); // This triggers anytime the auth state changes
+  useEffect(() => {
+    // If the user lands on the login page but already has a valid token...
+    if (auth?.token) {
+      const userRole = auth.role || 'patient';
+      // Bounce them immediately forward back to their dashboard!
+      if (userRole === 'doctor' || userRole === 'admin') {
+        navigate('/doctor', { replace: true });
+      } else {
+        navigate('/patient', { replace: true });
+      }
+    }
+  }, [auth, navigate]); // This triggers anytime the auth state changes
   
   async function handleSubmit(event) {  // defining an asynchronous function to handle the form submission event when the user attempts to log in
     event.preventDefault()   // prevents the default form submission behavior of HTML (which would cause a page reload), so that the login process can be handled via JavaScript instead
