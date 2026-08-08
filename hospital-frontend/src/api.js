@@ -67,6 +67,11 @@ export async function registerUser(userData) {
   return response.data;
 }
 
+export async function fetchAllUsers() {
+  const response = await API.get('/users/');
+  return response.data;
+}
+
 // Doctor endpoints
 export async function fetchDoctors() {
   const response = await API.get('/doctors');
@@ -80,7 +85,7 @@ export async function fetchDoctorAppointments(doctorId) {
 
 // Appointment endpoints
 export async function fetchMyAppointments() {
-  const response = await API.get('/appointments/my');
+  const response = await API.get('/appointments/me');
   return response.data;
 }
 
@@ -91,6 +96,25 @@ export async function createAppointment(appointmentData) {
 
 export async function updateAppointmentStatus(appointmentId, status) {
   const response = await API.put(`/appointments/${appointmentId}`, { status });
+  return response.data;
+}
+
+
+// 1. Matches: @router.get("/", response_model=list[AppointmentResponse]) in appointments.py
+export async function fetchAdminAllAppointments() {
+  const token = localStorage.getItem('token');
+  const response = await axios.get('http://127.0.0.1:8000/appointments/', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+}
+
+// 2. Matches: @router.post("/", response_model=DoctorResponse) in doctors.py
+export async function createDoctorProfile(doctorPayload) {
+  const token = localStorage.getItem('token');
+  const response = await axios.post('http://127.0.0.1:8000/doctors/', doctorPayload, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
   return response.data;
 }
 

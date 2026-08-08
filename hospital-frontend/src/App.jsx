@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import PatientDashboard from './pages/PatientDashboard'
 import DoctorDashboard from './pages/DoctorDashboard'
+import AdminDashboard from './pages/AdminDashboard'
 import {
   clearStoredAuth,
   decodeJwtPayload,
@@ -80,6 +81,12 @@ function App() {
               <ProtectedRoute auth={auth} allowedRoles={['doctor', 'admin']}>
                 <DoctorDashboard auth={auth} />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              auth?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/login" replace />
             }
           />
           <Route

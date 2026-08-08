@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.models.users import User
 from app.schemas.appointments import UserCreate, UserResponse
-from app.utils.security import hash_password, verify_password, create_access_token
+from app.utils.security import hash_password, verify_password, create_access_token, require_role
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -62,3 +62,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         "token_type": "bearer",
         "role": user.role
     }
+
+@router.get("/")
+def get_all_users(db: Session = Depends(get_db), current_user: User = Depends(require_role(["admin"]))):
+    return db.query(User).all()

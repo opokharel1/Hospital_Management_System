@@ -14,14 +14,20 @@ function DoctorDashboard({ auth }) {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
-  const currentUserId = useMemo(() => {
+  // 1. Decode token to get the logged-in User's ID and Role
+  const { currentUserId, userRole } = useMemo(() => {
     if (!auth?.token) {
-      return null
+      return { currentUserId: null, userRole: 'patient' }
     }
-
     const payload = decodeJwtPayload(auth.token)
-    return payload?.sub ? Number(payload.sub) : null
+    return {
+      currentUserId: payload?.sub ? Number(payload.sub) : null,
+      userRole: payload?.role || 'patient' // Assuming your JWT payload contains the role!
+    }
   }, [auth?.token])
+
+  // Determines if the user is a medical staff member or a system administrator
+  const isAdmin = userRole === 'admin'
 
   async function loadAppointments(doctorId) {
     if (!doctorId) {
@@ -46,26 +52,37 @@ function DoctorDashboard({ auth }) {
 
   useEffect(() => {
     async function loadDoctorContext() {
+      setLoading(true)
       try {
         const doctorList = await fetchDoctors()
         setDoctors(doctorList)
 
+        // Find the doctor profile that matches the logged-in User ID
         const currentDoctor = doctorList.find((doctor) => doctor.user_id === currentUserId)
-        const initialDoctorId = currentDoctor?.id || doctorList[0]?.id || ''
+        
+        // CRITICAL FIX: If they are a doctor, force their ID. If admin, fallback to the first doctor in list.
+        const initialDoctorId = currentDoctor?.id || (isAdmin ? doctorList[0]?.id : null)
 
         if (initialDoctorId) {
           setSelectedDoctorId(String(initialDoctorId))
           await loadAppointments(initialDoctorId)
+        } else if (!isAdmin) {
+          // If a doctor logs in but has no profile created in the doctor table yet
+          setError("Your user account is marked as a doctor, but no clinical profile has been set up by the admin yet.")
         }
       } catch (requestError) {
         setError(
           requestError?.response?.data?.detail || 'Unable to load your doctor dashboard.',
         )
+      } finally {
+        setLoading(false)
       }
     }
 
-    loadDoctorContext()
-  }, [currentUserId])
+    if (currentUserId) {
+      loadDoctorContext()
+    }
+  }, [currentUserId, isAdmin])
 
   async function handleStatusChange(appointmentId, status) {
     setError('')
@@ -73,7 +90,7 @@ function DoctorDashboard({ auth }) {
 
     try {
       await updateAppointmentStatus(appointmentId, status)
-      setSuccess('Appointment updated.')
+      setSuccess(`Appointment status successfully updated to ${status}.`)
       await loadAppointments(selectedDoctorId)
     } catch (requestError) {
       setError(
@@ -86,12 +103,13 @@ function DoctorDashboard({ auth }) {
     <main className="dashboard-shell">
       <section className="dashboard-header">
         <div>
-          <p className="eyebrow">Doctor and admin view</p>
-          <h1>Manage appointments</h1>
+          <p className="eyebrow">{isAdmin ? "Admin view" : "Doctor view"}</p>
+          <h1>{isAdmin ? "Hospital Schedules" : "My Appointments"}</h1>
         </div>
         <button
           type="button"
           className="secondary-button"
+          disabled={!selectedDoctorId}
           onClick={() => loadAppointments(selectedDoctorId)}
         >
           Refresh
@@ -99,29 +117,32 @@ function DoctorDashboard({ auth }) {
       </section>
 
       <section className="dashboard-grid">
-        <article className="panel full-width">
-          <h2>Select doctor</h2>
-          <div className="inline-form">
-            <select
-              value={selectedDoctorId}
-              onChange={(event) => {
-                const nextDoctorId = event.target.value
-                setSelectedDoctorId(nextDoctorId)
-                loadAppointments(nextDoctorId)
-              }}
-            >
-              <option value="">Choose a doctor</option>
-              {doctors.map((doctor) => (
-                <option key={doctor.id} value={doctor.id}>
-                  {doctor.name} - {doctor.specialization}
-                </option>
-              ))}
-            </select>
-          </div>
-        </article>
+        {/* 2. HIDE SELECTOR FOR DOCTORS: Only show the selector panel if an Admin is logged in */}
+        {isAdmin && (
+          <article className="panel full-width">
+            <h2>Select doctor</h2>
+            <div className="inline-form">
+              <select
+                value={selectedDoctorId}
+                onChange={(event) => {
+                  const nextDoctorId = event.target.value
+                  setSelectedDoctorId(nextDoctorId)
+                  loadAppointments(nextDoctorId)
+                }}
+              >
+                <option value="">Choose a doctor</option>
+                {doctors.map((doctor) => (
+                  <option key={doctor.id} value={doctor.id}>
+                    {doctor.name} - {doctor.specialization}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </article>
+        )}
 
         <article className="panel full-width">
-          <h2>Appointments</h2>
+          <h2>Appointments Schedule</h2>
           {loading ? (
             <p className="muted">Loading appointments...</p>
           ) : error ? (
@@ -150,7 +171,7 @@ function DoctorDashboard({ auth }) {
               ))}
             </div>
           ) : (
-            <p className="muted">No appointments found for the selected doctor.</p>
+            <p className="muted">No appointments scheduled.</p>
           )}
 
           {success ? <p className="form-success">{success}</p> : null}

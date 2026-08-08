@@ -16,9 +16,13 @@ function Login({ auth, onLogin }) {
     if (auth?.token) {
       const userRole = auth.role || 'patient';
       // Bounce them immediately forward back to their dashboard!
-      if (userRole === 'doctor' || userRole === 'admin') {
+      if (userRole === 'doctor' ) {
         navigate('/doctor', { replace: true });
-      } else {
+      } 
+      else if (userRole === 'admin') {
+        navigate('/admin', { replace: true });
+      }
+      else {
         navigate('/patient', { replace: true });
       }
     }

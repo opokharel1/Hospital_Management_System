@@ -14,23 +14,32 @@ function PatientDashboard() {
   const [success, setSuccess] = useState('')
 
   async function loadDashboard() {
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError('');
 
+    // 1. STEP ONE: Fetch the public doctors list (Isolated)
     try {
-      const [doctorList, myAppointments] = await Promise.all([
-        fetchDoctors(),
-        fetchMyAppointments(),
-      ])
+      console.log("Fetching doctors from public directory...");
+      const doctorList = await fetchDoctors();
+      console.log("Doctors successfully loaded:", doctorList);
 
-      setDoctors(doctorList)
-      setAppointments(myAppointments)
-    } catch (requestError) {
-      setError(
-        requestError?.response?.data?.detail || 'Unable to load your dashboard right now.',
-      )
+      // Save the list into your state memory
+      setDoctors(doctorList || []);
+    } catch (docError) {
+      console.error("Failed to load public doctor directory:", docError);
+      // We don't block the screen here because it's just one section
+    }
+
+    // 2. STEP TWO: Fetch private appointments (Isolated)
+    try {
+      console.log("Fetching private user appointments...");
+      const myAppointments = await fetchMyAppointments();
+      setAppointments(myAppointments || []);
+    } catch (appError) {
+      // If this gets a 404, it will log here but won't wipe out your doctors list!
+      console.error("Appointments endpoint temporary failure:", appError);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -67,9 +76,7 @@ function PatientDashboard() {
           <p className="eyebrow">Patient view</p>
           <h1>Book and track appointments</h1>
         </div>
-        <button type="button" className="secondary-button" onClick={loadDashboard}>
-          Refresh
-        </button>
+
       </section>
 
       <section className="dashboard-grid">
