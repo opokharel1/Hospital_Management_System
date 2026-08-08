@@ -14,9 +14,9 @@ function Navbar({ auth, onLogout }) {
       <nav className="nav-links">
         {isAuthenticated ? (
           <>
-            <NavLink to={dashboardPath}>Dashboard</NavLink>
-            {auth.role === 'patient' ? <NavLink to="/patient">Patient</NavLink> : null}
-            {auth.role !== 'patient' ? <NavLink to="/doctor">Doctor</NavLink> : null}
+            {auth.role === 'patient' ? <NavLink to="/patient">Patient Dashboard</NavLink> : null}
+            {auth.role !== 'patient' ? <NavLink to="/doctor">Doctor Dashboard</NavLink> : null}
+            
             <button className="nav-button" type="button" onClick={onLogout}>
               Logout
             </button>

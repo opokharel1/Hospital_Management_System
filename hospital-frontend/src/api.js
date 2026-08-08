@@ -1,3 +1,5 @@
+// Writing Helper functions for API calls to the backend FastAPI server
+
 import axios from 'axios';
 
 const API = axios.create({
@@ -21,7 +23,8 @@ export function decodeJwtPayload(token) {
     if (parts.length !== 3) return null;
     const decoded = atob(parts[1]);
     return JSON.parse(decoded);
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Failed to decode JWT:', error);
     return null;
   }

@@ -51,6 +51,7 @@ function App() {
   function handleLogout() {
     clearStoredAuth()
     setAuth({ token: null, role: null, userId: null })
+    navigate('/login', { replace: true });
   }
 
   return (
@@ -63,7 +64,7 @@ function App() {
             path="/"
             element={<Navigate to={auth?.token ? roleHome(auth.role) : '/login'} replace />}
           />
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/login" element={<Login auth={auth} onLogin={handleLogin} />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/patient"
