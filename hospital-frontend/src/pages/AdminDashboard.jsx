@@ -135,7 +135,7 @@ function AdminDashboard() {
                             ))}
                         </div>
                     ) : (
-                        <p className="muted">🎉 No pending staff validations outstanding.</p>
+                        <p className="muted"> No pending staff validations</p>
                     )}
                 </article>
 
