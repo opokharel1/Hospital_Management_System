@@ -101,7 +101,8 @@ Once you hit execute, look at your terminal log. You will see a "POST /appointme
 pip install pydantic[email]
 
 ## Generate requirements.txt
-
+## Update requirements.txt: (.venv should be activated)
+pip freeze > requirements.txt
 
 ## Create Separate API Route Blueprints
 1. <b>Create a Users Router (app/routes/users.py)</b>
@@ -243,6 +244,8 @@ If your frontend api.js or loginUser function is sending JSON { "username": "...
 
 <i> so, Fix in src/api.js (or wherever loginUser is defined) </i>
 
+## Generating a Random Cryptographic Key (JWT_Secret)
+python -c "import secrets; print(secrets.token_hex(32))"
 
 
 

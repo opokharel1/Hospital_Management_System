@@ -26,6 +26,7 @@ app.include_router(appointment_router)
 origins = [
     "http://localhost:5173",  # Vite default port
     "http://localhost:3000",  # Create-React-App default port
+    "https://your-app-name.vercel.app",
 ]
 
 app.add_middleware(

@@ -2,8 +2,10 @@
 
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+
 const API = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+  baseURL: API_BASE_URL,
 });
 
 // Interceptor to attach JWT token to every request
@@ -100,21 +102,13 @@ export async function updateAppointmentStatus(appointmentId, status) {
 }
 
 
-// 1. Matches: @router.get("/", response_model=list[AppointmentResponse]) in appointments.py
 export async function fetchAdminAllAppointments() {
-  const token = localStorage.getItem('token');
-  const response = await axios.get('http://127.0.0.1:8000/appointments/', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const response = await API.get('/appointments/');
   return response.data;
 }
 
-// 2. Matches: @router.post("/", response_model=DoctorResponse) in doctors.py
 export async function createDoctorProfile(doctorPayload) {
-  const token = localStorage.getItem('token');
-  const response = await axios.post('http://127.0.0.1:8000/doctors/', doctorPayload, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const response = await API.post('/doctors/', doctorPayload);
   return response.data;
 }
 
